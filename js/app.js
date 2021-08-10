@@ -30,6 +30,7 @@ imageView.all = [];
 let leftRandom = 0
 let middleRandom = 0
 let rightRandom = 0
+let prevArr=[];
 
 const imageSection = document.getElementById('imageSection');
 let leftImage = document.getElementById('leftImage');
@@ -64,7 +65,14 @@ function render() {
     leftRandom = getRandomNumber(0, imgArray.length - 1);
     middleRandom = getRandomNumber(0, imgArray.length - 1);
     rightRandom = getRandomNumber(0, imgArray.length - 1);
-  } while (leftRandom === middleRandom || middleRandom === rightRandom || rightRandom === leftRandom);
+  } while (leftRandom === middleRandom ||
+     middleRandom === rightRandom ||
+      rightRandom === leftRandom
+      // prevArr.includes(leftRandom) ||
+      )
+
+      prevArr = [rightRandom,leftRandom,middleRandom];
+
 
   leftImage.src = './img/' + imageView.all[leftRandom].image;
   middleImage.src = './img/' + imageView.all[middleRandom].image;
@@ -124,7 +132,18 @@ function clickHandler(e) {
 
 
 function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+  let random;
+  let allowed;
+  do{
+    random= Math.floor(Math.random() * (max - min + 1) + min);
+    allowed = true;
+    for (let i=0; i<prevArr.length; i++){
+      if (random=== prevArr[i]){
+        allowed= false;
+      }
+    }
+  } while(!allowed)
+  return random;
 }
 
 
