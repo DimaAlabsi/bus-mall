@@ -161,7 +161,7 @@ function createChat() {
         },
       {
 
-        labels: nameArr,
+        
 
         label: '  votes ',
         data: votesArr,
