@@ -26,6 +26,10 @@ let imgArray = [
 
 let counter = 0;
 let numberOfRound = 25;
+imageView.all = [];
+let leftRandom = 0
+let middleRandom = 0
+let rightRandom = 0
 
 const imageSection = document.getElementById('imageSection');
 let leftImage = document.getElementById('leftImage');
@@ -36,7 +40,6 @@ let rightImage = document.getElementById('rightImage');
 let button = document.getElementById('viewResults');
 let results = document.getElementById('result');
 
-
 function imageView(name, imageSrc) {
   this.Name = name;
   this.image = imageSrc;
@@ -46,16 +49,14 @@ function imageView(name, imageSrc) {
 
 }
 
-imageView.all = [];
+
 
 for (let i = 0; i < imgArray.length; i++) {
   new imageView(imgArray[i].split('.')[0], imgArray[i]);
 }
 
 console.log('data', imageView.all);
-let leftRandom = 0
-let middleRandom = 0
-let rightRandom = 0
+
 
 function render() {
 
@@ -72,23 +73,49 @@ function render() {
   imageView.all[leftRandom].shown++;
   imageView.all[middleRandom].shown++;
   imageView.all[rightRandom].shown++;
-  imageView.all[leftRandom].counter++
-  imageView.all[rightRandom].counter++
-  imageView.all[middleRandom].counter++
+ 
 }
 render();
 
+
+
+
+
+
 imageSection.addEventListener('click', clickHandler);
+
+
 function clickHandler(e) {
   if ((e.target.id === 'leftImage' || e.target.id === 'rightImage' || e.target.id === 'middleImage') && counter < numberOfRound) {
-    render();
-    counter++;
+    if (e.target.id === 'leftImage') {
+               imageView.all[leftRandom].counter++;render(); }
+      
+              if (e.target.id === 'rightImage') {
+                 imageView.all[rightRandom].counter++;render();
+                }
+      
+            if (e.target.id === 'middleImage') {
+                 imageView.all[middleRandom].counter++;render();
+                }
+      imageView.all.shown++;
   }
-  else {
-    document.getElementById('imageSection').removeEventListener('click', clickHandler)
-    createChat();
+  
+    
+  else if (counter >= numberOfRound){ 
+    for (let i=0; i<imgArray.length;i++){
+let resultLi = document.createElement('li');
+results.appendChild(resultLi);
+resultLi.textContent= `${imageView.all[i].Name} had ${imageView.all[i].counter} votes , and was seen ${imageView.all[i].shown} times`;
+
+
+    }
   }
+if (counter >= numberOfRound){
+  createChart();
+
 }
+}
+
 
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -96,29 +123,15 @@ function getRandomNumber(min, max) {
 
 
 
-// topButton.addEventListener('click', stopAndShowResult);
-
-// function stopAndShowResult() {
-//     for (let i = 0; i < imgProductArray.length; i++) {
-//         let resultUl = document.createElement('ul');
-//         resultDiv.appendChild(resultUl);
-//         let resultLi = document.createElement('li');
-//         resultUl.appendChild(resultLi);
-//         resultLi.textContent = `${Product.productObjects[i].productName} had ${Product.productObjects[i].timeClick} votes, and was seen ${Product.productObjects[i].timeShowImg} times.`;
-//     }
-// }
-
-// function removeHandler() {
-//     document.getElementById("imgProductSection").removeEventListener("click", changeImg);
-// }
 console.log(button);
 button.addEventListener('click', submitButton)
+
 function submitButton() {
 
 
 
   for (let i = 0; i < imgArray.length; i++) {
-    console.log('di', imageView.all[0])
+    
     let li = document.createElement('li');
     results.appendChild(li);
     li.textContent = `${imageView.all[i].Name} had ${imageView.all[i].counter} votes , and was seen ${imageView.all[i].shown} times`;
@@ -128,7 +141,7 @@ function submitButton() {
 }
 // chart:
 
-function createChat() {
+function createChart() {
 
   let nameArr = [];
   let votesArr = [];
