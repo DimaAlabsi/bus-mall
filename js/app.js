@@ -26,7 +26,9 @@ let imgArray = [
 
 let counterClick = 0;
 let numberOfRound = 25;
-imageView.all = [];
+ImageView.all = [];
+getData();
+
 let leftRandom = 0
 let middleRandom = 0
 let rightRandom = 0
@@ -41,22 +43,22 @@ let rightImage = document.getElementById('rightImage');
 let button = document.getElementById('viewResults');
 let results = document.getElementById('result');
 
-function imageView(name, imageSrc) {
+function ImageView(name, imageSrc,shown=0,counter=0) {
   this.Name = name;
   this.image = imageSrc;
-  this.shown = 0;
-  this.counter = 0;
-  imageView.all.push(this);
+  this.shown = shown;
+  this.counter =counter;
+  ImageView.all.push(this);
 
 }
 
 
 
-for (let i = 0; i < imgArray.length; i++) {
-  new imageView(imgArray[i].split('.')[0], imgArray[i]);
-}
+// for (let i = 0; i < imgArray.length; i++) {
+//   new ImageView(imgArray[i].split('.')[0], imgArray[i]);
+// }
 
-console.log('data', imageView.all);
+console.log('data', ImageView.all);
 
 
 function render() {
@@ -74,13 +76,16 @@ function render() {
       prevArr = [rightRandom,leftRandom,middleRandom];
 
 
-  leftImage.src = './img/' + imageView.all[leftRandom].image;
-  middleImage.src = './img/' + imageView.all[middleRandom].image;
-  rightImage.src = './img/' + imageView.all[rightRandom].image;
+  leftImage.src = './img/' + ImageView.all[leftRandom].image;
+  middleImage.src = './img/' + ImageView.all[middleRandom].image;
+  rightImage.src = './img/' + ImageView.all[rightRandom].image;
 
-  imageView.all[leftRandom].shown++;
-  imageView.all[middleRandom].shown++;
-  imageView.all[rightRandom].shown++;
+  ImageView.all[leftRandom].shown++;
+  ImageView.all[middleRandom].shown++;
+  ImageView.all[rightRandom].shown++;
+
+
+  localStorage.data= JSON.stringify(ImageView.all);
 
 }
 render();
@@ -100,17 +105,17 @@ function clickHandler(e) {
   { counterClick++; 
     console.log(counterClick);
     if (e.target.id === 'leftImage') {
-      imageView.all[leftRandom].counter++; render();
+      ImageView.all[leftRandom].counter++; render();
     }
 
     if (e.target.id === 'rightImage') {
-      imageView.all[rightRandom].counter++; render();
+      ImageView.all[rightRandom].counter++; render();
     }
 
     if (e.target.id === 'middleImage') {
-      imageView.all[middleRandom].counter++; render();
+      ImageView.all[middleRandom].counter++; render();
     }
-    imageView.all.shown++;
+    ImageView.all.shown++;
   }
 
 
@@ -118,7 +123,7 @@ function clickHandler(e) {
     for (let i = 0; i < imgArray.length; i++) {
       let resultLi = document.createElement('li');
       results.appendChild(resultLi);
-      resultLi.textContent = `${imageView.all[i].Name} had ${imageView.all[i].counter} votes , and was seen ${imageView.all[i].shown} times`;
+      resultLi.textContent = `${ImageView.all[i].Name} had ${ImageView.all[i].counter} votes , and was seen ${ImageView.all[i].shown} times`;
 
 
     }
@@ -159,7 +164,7 @@ function submitButton() {
 
     let li = document.createElement('li');
     results.appendChild(li);
-    li.textContent = `${imageView.all[i].Name} had ${imageView.all[i].counter} votes , and was seen ${imageView.all[i].shown} times`;
+    li.textContent = `${ImageView.all[i].Name} had ${ImageView.all[i].counter} votes , and was seen ${ImageView.all[i].shown} times`;
     console.log(li);
   }
   button.removeEventListener('click', submitButton)
@@ -173,10 +178,10 @@ function createChart() {
   let votesArr = [];
   let shownArr = [];
 
-  for (let i = 0; i < imageView.all.length; i++) {
-    nameArr.push(imageView.all[i].Name);
-    shownArr.push(imageView.all[i].shown);
-    votesArr.push(imageView.all[i].counter);
+  for (let i = 0; i < ImageView.all.length; i++) {
+    nameArr.push(ImageView.all[i].Name);
+    shownArr.push(ImageView.all[i].shown);
+    votesArr.push(ImageView.all[i].counter);
   }
 
 
@@ -225,3 +230,20 @@ function createChart() {
     }
   });
 }
+
+function getData(){
+
+  if (localStorage.data){
+    let data= JSON.parse(localStorage.data);
+    for (let i = 0; i < data.length; i++) {
+      new ImageView(data[i].Name, data[i].image, data[i].shown,data[i].counter);
+    }
+    
+  }
+  else{for (let i = 0; i < imgArray.length; i++) {
+    new ImageView(imgArray[i].split('.')[0], imgArray[i]);
+  }
+  }
+}
+
+
